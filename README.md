@@ -271,7 +271,7 @@
     <script>
         const SHEET_ID = '1Ne4jRjMj75t2zk-w9bCoO2jZlkJkOIxtQAlqNG91p3U';
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
-        const APPS_SCRIPT_URL = ''; // ضع رابط النشر الخاص بك هنا
+        const APPS_SCRIPT_URL = 'https://docs.google.com/spreadsheets/d/1Ne4jRjMj75t2zk-w9bCoO2jZlkJkOIxtQAlqNG91p3U/edit?usp=sharing'; // ضع رابط النشر الخاص بك هنا
 
         let db = [];
         let currentRole = '';
