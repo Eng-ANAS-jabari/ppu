@@ -236,19 +236,13 @@
                 </div>
                 <div class="space-y-4">
                     <div class="p-4 bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl">
-                        <p class="font-bold text-indigo-800">المطور:</p>
+                        <p class="font-bold text-indigo-800">المهندس:</p>
                         <p class="text-lg font-black text-gray-800">أنس جعبري</p>
-                        <p class="text-gray-600 mt-2">مطور أنظمة إلكترونية متخصص في حلول إدارة التعليم والتقييم</p>
+                        <p class="text-gray-600 mt-2">مهندس مساحة </p>
                     </div>
                     <div class="p-4 bg-gradient-to-r from-emerald-50 to-green-50 rounded-xl">
                         <p class="font-bold text-emerald-800">النسخة:</p>
-                        <p class="text-gray-800">الإصدار النهائي 2.0</p>
-                        <p class="text-sm text-gray-600 mt-1">© 2023 جميع الحقوق محفوظة</p>
-                    </div>
-                    <div class="p-4 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-xl">
-                        <p class="font-bold text-amber-800">معلومات التواصل:</p>
-                        <p class="text-gray-800"><i class="fas fa-envelope ml-2"></i>anasjabri@example.com</p>
-                        <p class="text-gray-800"><i class="fas fa-phone ml-2"></i>+1234567890</p>
+                    </div>   
                     </div>
                 </div>
                 <div class="mt-6 text-center">
@@ -350,7 +344,7 @@
                 </div>
             </div>
             <div class="mt-6 pt-4 border-t border-white/20 text-center text-sm opacity-80">
-                <p>نظام إدارة تقييم المناقشات - الإصدار النهائي © 2023 - تطوير: أنس جعبري</p>
+                <p>نظام إدارة تقييم المناقشات -  تطوير: أنس جعبري</p>
             </div>
         </footer>
     </div>
