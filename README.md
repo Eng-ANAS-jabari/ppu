@@ -60,14 +60,14 @@
             
             <!-- إضافة: إدخال اسم الناقش -->
             <div class="mt-8 pt-6 border-t border-gray-200">
-                <h3 class="text-xl font-black text-gray-800 mb-4"><i class="fas fa-user-edit ml-2"></i>إعدادات الناقش</h3>
+                <h3 class="text-xl font-black text-gray-800 mb-4"><i class="fas fa-user-edit ml-2"></i>إعدادات الناقش المشرف </h3>
                 <div class="grid md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block font-bold text-gray-700 mb-2">اسم الناقش:</label>
-                        <input type="text" id="examinerName" placeholder="أدخل اسم الناقش..." class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none">
+                        <label class="block font-bold text-gray-700 mb-2">اسم الناقش/المشرف :</label>
+                        <input type="text" id="examinerName" placeholder="اسم الناقش/المشرف ..." class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none">
                     </div>
                     <div>
-                        <label class="block font-bold text-gray-700 mb-2">توقيع الناقش:</label>
+                        <label class="block font-bold text-gray-700 mb-2">التوقيع :</label>
                         <div class="flex gap-2">
                             <input type="text" id="examinerSignature" placeholder="التوقيع..." class="flex-1 p-3 border-2 border-gray-300 rounded-lg">
                             <button onclick="clearSignature()" class="px-4 py-3 bg-gray-200 hover:bg-gray-300 rounded-lg"><i class="fas fa-eraser"></i></button>
