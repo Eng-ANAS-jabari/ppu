@@ -60,7 +60,7 @@
             
             <!-- إضافة: إدخال اسم الناقش -->
             <div class="mt-8 pt-6 border-t border-gray-200">
-                <h3 class="text-xl font-black text-gray-800 mb-4"><i class="fas fa-user-edit ml-2"></i>إعدادات الناقش المشرف </h3>
+                <h3 class="text-xl font-black text-gray-800 mb-4"><i class="fas fa-user-edit ml-2"></i>إعدادات الناقش/المشرف </h3>
                 <div class="grid md:grid-cols-2 gap-4">
                     <div>
                         <label class="block font-bold text-gray-700 mb-2">اسم الناقش/المشرف :</label>
@@ -344,7 +344,7 @@
                 </div>
             </div>
             <div class="mt-6 pt-4 border-t border-white/20 text-center text-sm opacity-80">
-                <p>نظام إدارة تقييم المناقشات -  تطوير: أنس جعبري</p>
+                <p>نظام إدارة تقييم المناقشات -  المهندس: أنس جعبري</p>
             </div>
         </footer>
 
@@ -876,13 +876,13 @@
                 return;
             }
             
-            let message = "📊 *نتائج تقييم المناقشات*\n\n";
+            let message = "📢 *نتائج تقييم المناقشات*\n\n";
             resultsDB.slice(-10).forEach(result => {
-                message += `👨‍🎓 ${result.student}\n`;
-                message += `🏆 المجموع: ${result.total}\n`;
-                message += `📋 التقدير: ${result.grade}\n`;
-                message += `👨‍🏫 الناقش: ${result.examiner}\n`;
-                message += `📅 ${result.date}\n`;
+                message += `👤 ${result.student}\n`;
+                message += `📝 المجموع: ${result.total}\n`;
+                message += `🎓 التقدير: ${result.grade}\n`;
+                message += `🖋️ الناقش: ${result.examiner}\n`;
+                message += `🕙 ${result.date}\n`;
                 message += "───────────────\n";
             });
             
@@ -895,13 +895,13 @@
             const result = resultsDB.find(r => r.id === resultId);
             if (!result) return;
             
-            let message = `📋 *نتيجة التقييم*\n\n`;
-            message += `👨‍🎓 *الطالب:* ${result.student}\n`;
-            message += `🏷️ *المجموعة:* ${result.group}\n`;
-            message += `📊 *الدرجة الكلية:* ${result.total}/100\n`;
-            message += `🏆 *التقدير:* ${result.grade}\n`;
-            message += `👨‍🏫 *الناقش:* ${result.examiner}\n`;
-            message += `📅 *التاريخ:* ${result.date}\n\n`;
+            let message = `📢 *نتيجة التقييم*\n\n`;
+            message += `👤 *الطالب:* ${result.student}\n`;
+            message += `👥 *المجموعة:* ${result.group}\n`;
+            message += `📝 *الدرجة الكلية:* ${result.total}/100\n`;
+            message += `🎓 *التقدير:* ${result.grade}\n`;
+            message += `🖋️ *الناقش:* ${result.examiner}\n`;
+            message += `🕙 *التاريخ:* ${result.date}\n\n`;
             
             // تفاصيل الدرجات
             message += `*تفاصيل الدرجات:*\n`;
