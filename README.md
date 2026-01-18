@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
     <meta charset="UTF-8">
@@ -586,25 +585,20 @@
         }
     };
 
-    // نظام الحماية المبسط
+    // ==================== نظام الحماية ====================
     function login() {
         const passwordInput = document.getElementById('passwordInput').value;
         
         if (passwordInput === systemPassword) {
-            // إخفاء طبقة الحماية
             document.getElementById('securityLayer').classList.add('hidden');
             document.getElementById('app').classList.remove('hidden');
-            
-            // حفظ حالة الدخول
             localStorage.setItem('user_logged_in', 'true');
-            
             alert('🎉 تم الدخول بنجاح! مرحبًا بك في نظام إدارة تقييم المناقشات.');
         } else {
             alert('كلمة المرور غير صحيحة! حاول مرة أخرى.');
             document.getElementById('passwordInput').value = '';
             document.getElementById('passwordInput').focus();
             
-            // تأثير اهتزاز عند خطأ
             const input = document.getElementById('passwordInput');
             input.classList.add('border-red-500');
             input.classList.add('animate-shake');
@@ -666,7 +660,6 @@
         
         systemPassword = newPass;
         localStorage.setItem('system_password', newPass);
-        
         alert('✅ تم تغيير كلمة المرور بنجاح!');
         closeChangePassword();
     }
@@ -674,7 +667,6 @@
     function logout() {
         if (confirm('هل تريد تسجيل الخروج من النظام؟')) {
             localStorage.removeItem('user_logged_in');
-            
             document.getElementById('app').classList.add('hidden');
             document.getElementById('securityLayer').classList.remove('hidden');
             document.getElementById('passwordInput').value = '';
@@ -684,8 +676,27 @@
         }
     }
 
-    // دالة إضافة + و - للتقييم
+    // ==================== دالة التحقق من التقييم المكرر ====================
+    function isAlreadyEvaluated(student, group, role, examiner) {
+        return resultsDB.some(result => 
+            result.student === student && 
+            result.group === group && 
+            result.role === role && 
+            result.examiner === examiner
+        );
+    }
+
+    // ==================== نظام التقييم ====================
     function openEvalForm(studentName) {
+        const examinerName = document.getElementById('examinerName').value;
+        const groupId = document.getElementById('groupSelect').value;
+        
+        // التحقق من التقييم المكرر قبل فتح النموذج
+        if (examinerName && isAlreadyEvaluated(studentName, groupId, activeRole, examinerName)) {
+            alert(`⚠️ الطالب ${studentName} تم تقييمه مسبقاً من قبلك! لا يمكن تقييمه مرة أخرى.`);
+            return;
+        }
+        
         const criteriaList = document.getElementById('criteriaList');
         criteriaList.innerHTML = '';
         
@@ -762,7 +773,6 @@
         const currentValue = parseInt(slider.value) || 0;
         let newValue = currentValue + change;
         
-        // التأكد من أن القيمة ضمن النطاق
         if (newValue < 0) newValue = 0;
         if (newValue > max) newValue = max;
         
@@ -770,7 +780,6 @@
         updateScoreDisplay(index, newValue);
         calculateTotal();
         
-        // تأثير عند التغيير
         const scoreElement = document.getElementById(`score${index}`);
         scoreElement.classList.add('animate-pulse');
         setTimeout(() => {
@@ -812,7 +821,6 @@
         
         document.getElementById('totalScore').textContent = total;
         
-        // تغيير لون المجموع حسب القيمة
         const totalElement = document.getElementById('totalScore');
         totalElement.classList.remove('text-indigo-700', 'text-green-600', 'text-yellow-600', 'text-red-600');
         
@@ -827,7 +835,6 @@
         }
     }
 
-    // بقية الدوال بدون تغيير
     function addCustomCriterion() {
         const criterionName = prompt('أدخل اسم المعيار الجديد:', 'معيار إضافي');
         if (!criterionName) return;
@@ -960,6 +967,8 @@
 
         const group = mainDB.find(g => g.id === groupId);
         if (!group) return;
+        
+        const examinerName = document.getElementById('examinerName').value;
 
         let studentsHTML = '<div class="grid md:grid-cols-2 gap-4">';
         
@@ -968,29 +977,46 @@
                 r.student === student && r.group === groupId && r.role === activeRole
             );
             
+            const evaluatedByCurrentExaminer = existingEval && examinerName && existingEval.examiner === examinerName;
+            
             studentsHTML += `
-            <div class="border border-gray-300 rounded-xl p-4 hover:shadow-md transition ${existingEval ? 'bg-gradient-to-r from-green-50 to-emerald-50' : ''}">
+            <div class="border border-gray-300 rounded-xl p-4 hover:shadow-md transition ${existingEval ? (evaluatedByCurrentExaminer ? 'bg-gradient-to-r from-red-50 to-orange-50' : 'bg-gradient-to-r from-green-50 to-emerald-50') : 'bg-white'}">
                 <div class="flex items-center justify-between">
                     <div>
                         <h4 class="font-bold text-lg text-gray-800">${student}</h4>
                         <p class="text-sm text-gray-600">المجموعة: ${group.id} | المشروع: ${group.project}</p>
                         ${existingEval ? `
-                        <div class="mt-2 flex items-center">
-                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">تم التقييم</span>
-                            <span class="mr-2 text-sm font-bold">${existingEval.total} درجة</span>
-                            ${existingEval.synced ? '<span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded mr-2">✓ محفوظ في السحابة</span>' : ''}
+                        <div class="mt-2 flex flex-wrap items-center gap-2">
+                            <span class="px-2 py-1 ${evaluatedByCurrentExaminer ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'} text-xs rounded">
+                                ${evaluatedByCurrentExaminer ? 'تم التقييم من قبلك' : 'تم التقييم'}
+                            </span>
+                            <span class="text-sm font-bold">${existingEval.total} درجة</span>
+                            <span class="text-sm text-gray-600">من قبل: ${existingEval.examiner}</span>
+                            ${existingEval.synced ? '<span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">✓ محفوظ في السحابة</span>' : ''}
                         </div>
                         ` : ''}
                     </div>
                     <div class="flex gap-2">
+                        ${!evaluatedByCurrentExaminer ? `
                         <button onclick="openEvalForm('${student}')" class="px-4 py-2 ${roleSettings[activeRole].color} text-white font-bold rounded-lg hover:opacity-90 transition">
                             <i class="fas fa-edit ml-2"></i>تقييم
                         </button>
                         <button onclick="quickStudentEval('${student}', '${groupId}')" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                             <i class="fas fa-bolt"></i>
                         </button>
+                        ` : `
+                        <button class="px-4 py-2 bg-gray-400 text-white font-bold rounded-lg cursor-not-allowed" disabled>
+                            <i class="fas fa-ban ml-2"></i>تم التقييم
+                        </button>
+                        `}
                     </div>
                 </div>
+                ${evaluatedByCurrentExaminer ? `
+                <div class="mt-3 p-2 bg-orange-50 border border-orange-200 rounded text-sm text-orange-700">
+                    <i class="fas fa-exclamation-triangle ml-2"></i>
+                    تم تقييم هذا الطالب مسبقاً من قبلك. لا يمكن تقييمه مرة أخرى.
+                </div>
+                ` : ''}
             </div>`;
         });
         
@@ -1012,6 +1038,12 @@
 
         if (!examinerName) {
             alert('يرجى إدخال اسم الناقش أولاً!');
+            return;
+        }
+
+        // التحقق من التقييم المكرر
+        if (isAlreadyEvaluated(studentName, groupId, activeRole, examinerName)) {
+            alert(`⚠️ الطالب ${studentName} تم تقييمه مسبقاً من قبل ${examinerName} لنفس نوع التقييم (${roleSettings[activeRole].title})!`);
             return;
         }
 
@@ -1080,6 +1112,12 @@
 
         if (!examinerName) {
             alert('يرجى إدخال اسم الناقش أولاً!');
+            return;
+        }
+
+        // التحقق من التقييم المكرر
+        if (isAlreadyEvaluated(studentName, groupId, activeRole, examinerName)) {
+            alert(`⚠️ الطالب ${studentName} تم تقييمه مسبقاً من قبل ${examinerName} لنفس نوع التقييم (${roleSettings[activeRole].title})!`);
             return;
         }
 
@@ -2115,14 +2153,22 @@
             const group = mainDB.find(g => g.id === groupId);
             if (!group) return;
             
+            const examinerName = document.getElementById('examinerName').value;
+            const role = document.getElementById('quickRole').value;
+            
             let studentsHTML = '';
             group.students.forEach(student => {
+                const isEvaluated = isAlreadyEvaluated(student, groupId, role, examinerName);
+                
                 studentsHTML += `
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <span class="font-medium">${student}</span>
-                    <button onclick="editIndividualScore('${student}', '${groupId}')" class="px-3 py-1 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded text-sm">
-                        تعديل
-                    </button>
+                <div class="flex items-center justify-between p-3 ${isEvaluated ? 'bg-orange-50 border border-orange-200' : 'bg-gray-50'} rounded-lg">
+                    <span class="font-medium ${isEvaluated ? 'text-orange-700' : ''}">${student}</span>
+                    ${isEvaluated ? 
+                        `<span class="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded">تم التقييم</span>` : 
+                        `<button onclick="editIndividualScore('${student}', '${groupId}')" class="px-3 py-1 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded text-sm">
+                            تعديل
+                        </button>`
+                    }
                 </div>`;
             });
             
@@ -2159,7 +2205,16 @@
         
         const settings = roleSettings[role];
         
+        let addedCount = 0;
+        let skippedCount = 0;
+        
         group.students.forEach(student => {
+            // التحقق من التقييم المكرر
+            if (isAlreadyEvaluated(student, groupId, role, examinerName)) {
+                skippedCount++;
+                return;
+            }
+            
             const scores = settings.criteria.map(criterion => ({
                 criterion: criterion.name,
                 score: Math.round((commonScore / 100) * criterion.max),
@@ -2185,10 +2240,17 @@
             };
             
             resultsDB.push(result);
+            addedCount++;
         });
         
         localStorage.setItem('grad_sys_results', JSON.stringify(resultsDB));
-        alert(`✅ تم تطبيق الدرجة ${commonScore} على ${group.students.length} طالب!`);
+        
+        let message = `✅ تم تطبيق الدرجة ${commonScore} على ${addedCount} طالب!`;
+        if (skippedCount > 0) {
+            message += `\n⚠️ تم تخطي ${skippedCount} طالب لأنهم تم تقييمهم مسبقاً من قبلك.`;
+        }
+        
+        alert(message);
         closeQuickEval();
         renderAdminTable();
         updateStats();
@@ -2234,6 +2296,12 @@
         
         if (!examinerName) {
             alert('يرجى إدخال اسم الناقش أولاً!');
+            return;
+        }
+
+        // التحقق من التقييم المكرر
+        if (isAlreadyEvaluated(student, groupId, role, examinerName)) {
+            alert(`⚠️ الطالب ${student} تم تقييمه مسبقاً من قبلك! لا يمكن تقييمه مرة أخرى.`);
             return;
         }
         
@@ -2321,7 +2389,6 @@
             updateExaminersFilter();
         }
         
-        // التحقق من حالة الدخول السابقة
         if (userLoggedIn === 'true') {
             document.getElementById('securityLayer').classList.add('hidden');
             document.getElementById('app').classList.remove('hidden');
@@ -2330,6 +2397,13 @@
         updateStats();
         updateAdminStats();
         switchSection('home');
+        
+        // إضافة حدث الاستماع لتغيير اسم الناقش لتحديث البطاقات
+        document.getElementById('examinerName').addEventListener('input', function() {
+            if (document.getElementById('evaluationSection').classList.contains('hidden') === false) {
+                renderStudentsCards();
+            }
+        });
     };
 
 </script>
